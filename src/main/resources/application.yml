@@ -1,0 +1,69 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1/gpt?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+    username: root
+    password: 13000
+
+
+
+  # 设置可传输文件的大小
+  servlet:
+    multipart:
+      max-file-size: 10MB # 设置最大文件上传大小，例如50MB
+      max-request-size: 10MB # 设置最大请求大小，例如50MB
+
+  data:
+    redis:
+      # 服务器地址ip
+      host: 127.0.0.1
+      # Redis端口
+      port: 6379
+      # Redis密码（默认为空）
+      password:
+
+      lettuce:
+        pool:
+          max-active: 8 #最大连接
+          max-idle: 8 #最大空闲连接
+          min-idle: 0 #最小空闲连接
+          max-wait: 100 #连接等待时间
+
+
+  #邮箱验证
+  mail:
+    host: smtp.qq.com
+    username: 1750859115@qq.com
+    password: rdrrkprirrxmfafg
+    default-encoding: UTF-8
+    port: 465
+    properties:
+      mail:
+        smtp:
+          auth: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+        debug: true
+
+
+
+mybatis-plus:
+  configuration:
+    #驼峰映射
+    map-underscore-to-camel-case: true
+    #日志信息
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+  #手动分配主键id
+  global-config:
+    db-config:
+      id-type: ASSIGN_ID
+
+
+
+
+
+
+
+server:
+  port: 3000

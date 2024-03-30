@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<button id="preViewImage">点击切换图片</button>
+<img class="checkCodeImg" src="" alt="验证码图片">
+<br>
+请输入验证码<input id="recheck">
+<button id="yes">确定</button>
+</body>
+<script src="jquery-1.7.1.min.js"></script>
+<script>
+
+    $("#preViewImage").click(function () {
+        /*
+        //解决跨域问题
+        $("#previewImage").attr("crossOrigin", "Anonymous");
+        */
+        //如果继续该src不变，浏览器缓存过，默认不变，是不会进行响应的。
+        //所以往后面加个不会变动它的接口，但是又不一样的src。所以加个时间就欧克了
+        var data = {
+            "width": 130,
+            "height": 60,
+            "verifySize": 5
+        };
+        $.ajax({
+            url: "http://localhost:3000/checkCodeImage",
+            type: "POST",
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify(data),
+            dataType: 'json',
+            success: function (res) {
+                console.log(res.data)
+                alert(res.sessionID);
+            },
+            error: function () {
+                alert("error")
+
+            }
+        })
+
+    })
+
+    $("#yes").click(function (){
+        let code = $("#recheck").val()
+        console.log(code)
+        $.ajax({
+            url: "http://localhost:3000/recheck/checkCode",
+            type: "POST",
+            data: code,
+            contentType: 'application/json;charset=UTF-8',
+            dataType: 'json',
+            success: function (res) {
+                console.log(res)
+                if (res.code === 204) {
+                    alert("正确")
+                }else{
+                    alert(res)
+                }
+            }
+        })
+    })
+</script>
+</html>
