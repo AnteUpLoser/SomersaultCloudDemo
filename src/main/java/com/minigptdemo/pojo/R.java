@@ -34,10 +34,10 @@ public class R<T> {
      */
     public static <T> R<T> success() {
         ResultCode code = ResultCode.CREATE_SUCCESS;
-        return new R<T>(code.getCode(),code.getMessage(),null);
+        return new R< >(code.getCode(),code.getMessage(),null);
     }
     public static <T> R<T> success(String msg){
-        return new R<T>(ResultCode.CREATE_SUCCESS.getCode(),msg,null);
+        return new R<>(ResultCode.CREATE_SUCCESS.getCode(),msg,null);
     }
 
 
@@ -47,22 +47,24 @@ public class R<T> {
      */
     public static <T> R<T> success(T data) {
         ResultCode code = ResultCode.SUCCESS;
-        return new R<T>(code.getCode(), code.getMessage(), data);
+        return new R<>(code.getCode(), code.getMessage(), data);
     }
     public static <T> R<T> success(T data,String msg){
-        return new R<T>(ResultCode.SUCCESS.getCode(), msg, data);
+        return new R<>(ResultCode.SUCCESS.getCode(), msg, data);
     }
     public static <T> R<T> success(ResultCode resultCode, String msg, T data){
-        return new R<T>(resultCode.getCode(), msg, data);
+        return new R<>(resultCode.getCode(), msg, data);
     }
 
-    //---------------------
-    //自定义错误响应
+    /**
+     *
+     * 自定义错误响应
+     */
     public static <T> R<T> error(ResultCode resultCode,String msg) {
-        return new R<T>(resultCode.getCode(), msg,null);
+        return new R<>(resultCode.getCode(), msg,null);
     }
     public static <T> R<T> failed(ResultCode resultCode, String msg, T data){
-        return new R<T>(resultCode.getCode(), msg, data);
+        return new R<>(resultCode.getCode(), msg, data);
     }
 
 

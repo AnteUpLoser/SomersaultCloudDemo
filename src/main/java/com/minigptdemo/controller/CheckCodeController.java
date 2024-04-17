@@ -21,8 +21,7 @@ public class CheckCodeController {
 
     //获取验证码及图片
     @PostMapping("/checkCodeImage")
-    public String checkCode(HttpServletResponse response,
-                                    @RequestBody CheckCode checkCode){
+    public String checkCode(HttpServletResponse response, @RequestBody CheckCode checkCode){
         return checkCodeService.getCheckCodeImg(response, checkCode);
     }
 
@@ -34,7 +33,7 @@ public class CheckCodeController {
         //过期
         if(res == null) return R.error(ResultCode.VALIDATE_FAILED,"验证码已过期");
 
-        if(res.equals("true")){
+        if("true".equals(res)){
             return R.success(ResultCode.NO_CONTENT_SUCCESS,"验证码正确",res);
         }
         return R.failed(ResultCode.VALIDATE_FAILED,"验证码错误",res);
