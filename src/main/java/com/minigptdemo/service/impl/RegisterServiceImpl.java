@@ -24,7 +24,7 @@ public class RegisterServiceImpl extends ServiceImpl<RegisterDao, RegisterDto> i
         String password = EncryptUtil.SHA(registerDto.getPassword());
 
         System.out.println(password);
-
+        registerDto.setPassword(password);
         registerDao.insertNewUser(registerDto);
 
         return registerDto.getUsername();
