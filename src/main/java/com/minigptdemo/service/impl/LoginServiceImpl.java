@@ -18,9 +18,11 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class LoginServiceImpl extends ServiceImpl<LoginDao, User> implements LoginService {
+public class LoginServiceImpl extends ServiceImpl<LoginDao, LoginDto> implements LoginService {
     @Resource
     private RedisService redisService;
+    @Resource
+    private LoginDao loginDao;
 
     public String userLogin(LoginDto user) {
         //已登录情况直接返回缓存token
@@ -29,8 +31,9 @@ public class LoginServiceImpl extends ServiceImpl<LoginDao, User> implements Log
         }
 
         Map<String, Object> tokenMap = new HashMap<>();
-        //token携带用户邮箱
-        tokenMap.put("userEmail",user.getUserEmail());
+        //token携带用户id
+        Integer uid = loginDao.findUidByEmail(user.getUserEmail());
+        tokenMap.put("uid",uid);
         String token = JwtUtil.createJwt(tokenMap);
 
         //TODO 待改：用户token时长
