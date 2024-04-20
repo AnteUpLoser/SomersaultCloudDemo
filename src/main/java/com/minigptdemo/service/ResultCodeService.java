@@ -1,5 +1,9 @@
 package com.minigptdemo.service;
 
+/**
+ * 响应码枚举类需要使用的业务方法
+ */
+
 public interface ResultCodeService {
     /**
      * 返回响应码

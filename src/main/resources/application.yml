@@ -41,9 +41,11 @@ spring:
       mail:
         smtp:
           auth: true
-          socketFactory:
-            class: javax.net.ssl.SSLSocketFactory
-        debug: true
+          starttls:
+            enable: true
+          debug: true
+          ssl:
+            enable: true
 
 
 

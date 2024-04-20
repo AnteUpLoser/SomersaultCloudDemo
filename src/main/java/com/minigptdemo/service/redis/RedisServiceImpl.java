@@ -22,7 +22,6 @@ public class RedisServiceImpl implements RedisService{
     @Resource
     private RedisTemplate<String,Object> redisTemplate;
 
-
     //获取对应key的value值
     public Object getValue(String key){
         return redisTemplate.opsForValue().get(key);
@@ -47,6 +46,11 @@ public class RedisServiceImpl implements RedisService{
     //设置一分钟有效期的值
     public void setOneMinValue(String key, String value){
         redisTemplate.opsForValue().set(key,value,1, TimeUnit.MINUTES);
+    }
+
+    //设置键值对并设置单位为分钟的时间
+    public void setValueByMin(String key, String value, int min) {
+        redisTemplate.opsForValue().set(key,value,min,TimeUnit.MINUTES);
     }
 
     //设置半小时有效期的值

@@ -21,6 +21,9 @@ public interface RedisService {
     //设置一分钟有效期的值
     void setOneMinValue(String key, String value);
 
+    //设置多少分钟有效值
+    void setValueByMin(String key, String value,int min);
+
     //设置半小时有效期的值
     void setHalfHourValue(String key, String value);
 }
