@@ -1,15 +1,14 @@
 package com.minigptdemo.service.redis;
 
 
-import org.springframework.stereotype.Service;
 
 
 public interface RedisService {
 
     //获取对应key的value值
-    Object getValue(String key);
+    String getValue(String key);
 
-    //设置kv
+    //设置持久化kv
     void setValue(String key, String value);
 
     //删除kv

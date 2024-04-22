@@ -3,8 +3,6 @@ package com.minigptdemo.service.redis;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +18,14 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RedisServiceImpl implements RedisService{
     @Resource
-    private RedisTemplate<String,Object> redisTemplate;
+    private StringRedisTemplate redisTemplate;
 
     //获取对应key的value值
-    public Object getValue(String key){
+    public String getValue(String key){
         return redisTemplate.opsForValue().get(key);
     }
 
-    //设置kv
+    //设置持久化kv
     public void setValue(String key, String value){
         redisTemplate.opsForValue().set(key, value);
     }
@@ -57,6 +55,8 @@ public class RedisServiceImpl implements RedisService{
     public void setHalfHourValue(String key, String value) {
         redisTemplate.opsForValue().set(key,value,30,TimeUnit.MINUTES);
     }
+
+
 
 
 }
