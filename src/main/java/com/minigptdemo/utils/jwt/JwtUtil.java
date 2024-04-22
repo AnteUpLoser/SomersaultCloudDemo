@@ -26,7 +26,7 @@ public class JwtUtil {
     public static String createJwt(Map<String, Object> claims){
         return Jwts.builder()
                 .addClaims(claims)
-                .signWith(SignatureAlgorithm.HS256, SIGN_KEY)
+                .signWith(SignatureAlgorithm.HS256, SIGN_KEY.getBytes())  //go的jwt数字签名不支持字符串
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRE))
                 .compact();
     }
@@ -35,8 +35,7 @@ public class JwtUtil {
      * 解析JWT令牌
      * @param jwt JWT令牌
      * @return claims内容的键值对
-     * Key:  username 用户名
-     *       userId  用户ID
+     * Key:    userId  用户ID
      */
     public static Map<String,Object> parseJwt(String jwt){
         Claims claims = Jwts.parser()
