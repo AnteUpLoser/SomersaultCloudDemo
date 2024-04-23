@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1/gpt?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+    url: jdbc:mysql://47.120.79.128/gpt?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
     username: root
-    password: 13000
+    password: Aa13000
 
 
 
@@ -16,18 +16,18 @@ spring:
   data:
     redis:
       # 服务器地址ip
-      host: 127.0.0.1
+      host: 47.120.79.128
       # Redis端口
       port: 6379
       # Redis密码（默认为空）
-      password:
+      password: 13000
 
-      lettuce:
-        pool:
-          max-active: 8 #最大连接
-          max-idle: 8 #最大空闲连接
-          min-idle: 0 #最小空闲连接
-          max-wait: 100 #连接等待时间
+#      lettuce:
+#        pool:
+#          max-active: 8 #最大连接
+#          max-idle: 8 #最大空闲连接
+#          min-idle: 0 #最小空闲连接
+#          max-wait: 20 #连接等待时间
 
 
   #邮箱验证
