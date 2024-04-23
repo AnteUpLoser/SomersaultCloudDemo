@@ -1,10 +1,10 @@
-package com.minigptdemo.controller;
+package com.demo.controller;
 
 
-import com.minigptdemo.constant.ResultCode;
-import com.minigptdemo.pojo.Email;
-import com.minigptdemo.pojo.R;
-import com.minigptdemo.service.EmailService;
+import com.demo.constant.ResultCode;
+import com.demo.pojo.Email;
+import com.demo.pojo.R;
+import com.demo.service.EmailService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;

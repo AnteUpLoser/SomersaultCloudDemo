@@ -1,6 +1,6 @@
-package com.minigptdemo.service;
+package com.demo.service;
 
-import com.minigptdemo.pojo.Email;
+import com.demo.pojo.Email;
 
 
 public interface EmailService {

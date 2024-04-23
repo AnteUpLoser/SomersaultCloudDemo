@@ -1,4 +1,4 @@
-package com.minigptdemo.pojo;
+package com.demo.pojo;
 
 import lombok.Data;
 

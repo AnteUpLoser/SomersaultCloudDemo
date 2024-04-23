@@ -1,6 +1,4 @@
-package com.minigptdemo.service.redis;
-
-
+package com.demo.service.redis;
 
 
 public interface RedisService {

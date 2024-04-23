@@ -1,4 +1,4 @@
-package com.minigptdemo.constant;
+package com.demo.constant;
 
 public class RedisConstants {
     public static final String REGISTER_CHECK_CODE = "checkCode:register:img:";

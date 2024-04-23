@@ -1,10 +1,10 @@
-package com.minigptdemo.service.impl;
+package com.demo.service.impl;
 
-import com.minigptdemo.constant.RedisConstants;
-import com.minigptdemo.pojo.Email;
-import com.minigptdemo.service.EmailService;
-import com.minigptdemo.service.redis.RedisService;
-import com.minigptdemo.utils.checkcode.CheckCodeUtil;
+import com.demo.constant.RedisConstants;
+import com.demo.pojo.Email;
+import com.demo.service.EmailService;
+import com.demo.service.redis.RedisService;
+import com.demo.utils.checkcode.CheckCodeUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 
 @Service
@@ -49,17 +48,16 @@ public class EmailServiceImpl implements EmailService {
         javaMailSender.setPort(port);
         javaMailSender.setUsername(username);
         javaMailSender.setPassword(password);
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        Properties props = javaMailSender.getJavaMailProperties();
-        System.out.println(props);
+
         try {
             String checkCode = CheckCodeUtil.generateVerifyCode(6,null);
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
             //发件人
             helper.setFrom(username, fromPersonal);
+            helper.setSubject(subject);
             //收件人
             helper.setTo(mailAddress);
-            helper.setSubject(subject);
             //选择渲染模板
             StringWriter writer = renderMail("register-email.ftl",checkCode);
             helper.setText(writer.toString(), true);
@@ -70,8 +68,6 @@ public class EmailServiceImpl implements EmailService {
             e.printStackTrace();
             return null;
         }
-
-
     }
 
     //选择渲染模板
@@ -93,7 +89,7 @@ public class EmailServiceImpl implements EmailService {
 
     //校验注册邮箱验证码
     public boolean checkRegisterMail(Email email) {
-        String rightCode = (String) redisService.getValue(RedisConstants.REGISTER_EMAIL_CODE+email.getAddress());
+        String rightCode = redisService.getValue(RedisConstants.REGISTER_EMAIL_CODE+email.getAddress());
         //忽略大小写
         //校验后兑消缓存验证码
         if(email.getEmailCode().equalsIgnoreCase(rightCode)){
