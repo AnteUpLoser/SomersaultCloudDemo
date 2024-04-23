@@ -26,7 +26,7 @@ public class LoginServiceImpl extends ServiceImpl<LoginDao, LoginDto> implements
     public String userLogin(LoginDto user) {
         //已登录情况直接返回缓存token
         if(redisService.isContainsKey(RedisConstants.USER_TOKEN+user.getUserEmail())){
-            return (String) redisService.getValue(RedisConstants.USER_TOKEN+user.getUserEmail());
+            return redisService.getValue(RedisConstants.USER_TOKEN+user.getUserEmail());
         }
 
         Map<String, Object> tokenMap = new HashMap<>();
