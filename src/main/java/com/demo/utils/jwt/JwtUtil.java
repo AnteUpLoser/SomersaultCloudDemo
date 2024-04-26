@@ -39,7 +39,7 @@ public class JwtUtil {
      */
     public static Map<String,Object> parseJwt(String jwt){
         Claims claims = Jwts.parser()
-                .setSigningKey(SIGN_KEY)
+                .setSigningKey(SIGN_KEY.getBytes())
                 .parseClaimsJws(jwt)
                 .getBody();
         return new HashMap<>(claims);
