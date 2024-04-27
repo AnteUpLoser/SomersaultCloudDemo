@@ -35,7 +35,7 @@ public class JwtUtil {
      * 解析JWT令牌
      * @param jwt JWT令牌
      * @return claims内容的键值对
-     * Key:    userId  用户ID
+     * Key:    uid  用户ID
      */
     public static Map<String,Object> parseJwt(String jwt){
         Claims claims = Jwts.parser()
@@ -43,5 +43,13 @@ public class JwtUtil {
                 .parseClaimsJws(jwt)
                 .getBody();
         return new HashMap<>(claims);
+    }
+
+    public static int getUidByJwt(String jwt){
+        Claims claims = Jwts.parser()
+                .setSigningKey(SIGN_KEY.getBytes())
+                .parseClaimsJws(jwt)
+                .getBody();
+        return (Integer) claims.get("uid");
     }
 }
