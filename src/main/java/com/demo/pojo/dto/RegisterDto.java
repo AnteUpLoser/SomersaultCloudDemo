@@ -1,11 +1,12 @@
 package com.demo.pojo.dto;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 @Data
+@TableName(value = "user_info")
 public class RegisterDto {
     private String username;
     private String password;
-    //邮箱或电话号码？
     private String userEmail;
 
 }

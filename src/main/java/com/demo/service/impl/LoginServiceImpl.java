@@ -31,14 +31,13 @@ public class LoginServiceImpl extends ServiceImpl<LoginDao, LoginDto> implements
 
         Map<String, Object> tokenMap = new HashMap<>();
         //token携带用户id
-        Integer uid = loginDao.findUidByEmail(user.getUserEmail());
+        int uid = loginDao.findUidByEmail(user.getUserEmail());
         tokenMap.put("uid",uid);
         String token = JwtUtil.createJwt(tokenMap);
 
         //TODO 待改：用户token时长
         //将登录用户token存入缓存
         redisService.setHalfHourValue(RedisConstants.USER_TOKEN+user.getUserEmail(),token);
-
         return token;
     }
 }

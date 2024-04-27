@@ -25,13 +25,14 @@ public class LoginController {
 
     @PostMapping("/login")
     public R<String> userLogin(@RequestBody LoginDto loginDto){
-        String SHAPassword = loginDao.findPasswordByUserEmail(loginDto.getUserEmail());
-        if(SHAPassword == null){
-            return R.error(ResultCode.VALIDATE_FAILED,"邮箱不存在");
+        String realPwd = loginDao.findPasswordByUserEmail(loginDto.getUserEmail());
+        if(realPwd == null){
+            return R.error(ResultCode.VALIDATE_FAILED,"用户不存在");
         }
-        if(!EncryptUtil.verify(loginDto.getPassword(),SHAPassword)){
+        if(!EncryptUtil .verifyUserPwd(loginDto.getPassword(),loginDto.getUserEmail(),realPwd)){
             return R.error(ResultCode.VALIDATE_FAILED,"密码错误");
         }
+
         String token = loginService.userLogin(loginDto);
         return R.success(ResultCode.SUCCESS,"登录成功",token);
 
