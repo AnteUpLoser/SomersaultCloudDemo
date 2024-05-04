@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace="com.b0.mybatis.mapper.UserMapper" -->
+<mapper namespace="com.demo.commentbot.dao.LabelInfoDao">
+    <!-- 批量查询对应id的评价内容 -->
+    <select id="getLabelInfoList" parameterType="java.util.List" resultType="java.lang.String">
+        SELECT label_text
+        FROM label_info
+        WHERE id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>
