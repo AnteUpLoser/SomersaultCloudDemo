@@ -36,9 +36,7 @@ public class R<T> {
         ResultCode code = ResultCode.CREATE_SUCCESS;
         return new R< >(code.getCode(),code.getMessage(),null);
     }
-    public static <T> R<T> success(String msg){
-        return new R<>(ResultCode.CREATE_SUCCESS.getCode(),msg,null);
-    }
+
 
 
     /**

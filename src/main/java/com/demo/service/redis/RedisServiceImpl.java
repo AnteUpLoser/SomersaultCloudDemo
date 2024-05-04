@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -53,6 +54,16 @@ public class RedisServiceImpl implements RedisService{
     //设置半小时有效期的值
     public void setHalfHourValue(String key, String value) {
         stringRedisTemplate.opsForValue().set(key,value,30,TimeUnit.MINUTES);
+    }
+
+    //存储聊天记录
+    public void storeChatMessage(String key, String message, long timestamp){
+        stringRedisTemplate.opsForZSet().add(key, message, timestamp);
+    }
+
+    //获取所有聊天记录
+    public Set<String> getChatMessages(String key) {
+        return stringRedisTemplate.opsForZSet().reverseRange(key, 0, -1);
     }
 
 

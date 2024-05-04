@@ -1,6 +1,5 @@
 package com.demo.constant;
 
-import com.demo.service.ResultCodeService;
 /*
     public static final int SUCCESS = 200;                  //ok && 返回有效响应数据
     public static final int CREATED_SUCCESS = 201;          //ok && 表示成功创建新资源
@@ -12,7 +11,7 @@ import com.demo.service.ResultCodeService;
     public static final int SERVICE_FAILED = 503;           //服务器无法处理(维护或过载)
 */
 
-public enum ResultCode implements ResultCodeService {
+public enum ResultCode {
     //通用
     SUCCESS(200, "成功"),
     CREATE_SUCCESS(201,"操作成功"),
@@ -20,6 +19,7 @@ public enum ResultCode implements ResultCodeService {
     FAILED(500, "操作失败"),
     UNAUTHORIZED(401, "暂未登录或token已经过期"),
     FORBIDDEN(403, "没有相关权限"),
+
     //自用
     VALIDATE_FAILED(405, "参数检验失败");
 

@@ -1,8 +1,7 @@
 package com.demo.utils.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,11 +44,40 @@ public class JwtUtil {
         return new HashMap<>(claims);
     }
 
-    public static int getUidByJwt(String jwt){
+    /**
+     * 直接通过jwt令牌得到uid
+     * @param jwt 令牌
+     * @return 用户id
+     */
+    public static Integer getUidByJwt(String jwt){
+        //判断是否jwt正确
+        if(!isValidJwt(jwt)) return null;
+
         Claims claims = Jwts.parser()
                 .setSigningKey(SIGN_KEY.getBytes())
                 .parseClaimsJws(jwt)
                 .getBody();
         return (Integer) claims.get("uid");
+    }
+
+
+    /**
+     * 判断令牌是否有效
+     * @param jwt 令牌
+     * @return boolean
+     */
+    public static boolean isValidJwt(String jwt) {
+        try {
+            Jws<Claims> claims = Jwts.parser()
+                    .setSigningKey(SIGN_KEY.getBytes())
+                    .parseClaimsJws(jwt);
+
+            Claims jwtClaims = claims.getBody();
+            return !jwtClaims.getExpiration().before(new Date());
+        } catch (Exception e) {
+            // Invalid JWT signature
+            return false;
+        }
+
     }
 }

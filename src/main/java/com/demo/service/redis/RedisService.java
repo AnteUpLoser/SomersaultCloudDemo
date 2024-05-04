@@ -1,6 +1,8 @@
 package com.demo.service.redis;
 
 
+import java.util.Set;
+
 public interface RedisService {
 
     //获取对应key的value值
@@ -23,4 +25,12 @@ public interface RedisService {
 
     //设置半小时有效期的值
     void setHalfHourValue(String key, String value);
+
+    //存储聊天记录
+    void storeChatMessage(String key, String message, long timestamp);
+
+    //获取所有聊天记录
+    Set<String> getChatMessages(String key);
+
+
 }
