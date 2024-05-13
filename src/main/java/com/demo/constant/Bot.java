@@ -7,7 +7,7 @@ package com.demo.constant;
 
 public class Bot {
     //基本配置信息
-    public static final String SK = "密钥";
+    public static final String SK = "sk";
     public static final String API_URL = "https://api.openai.com/v1/chat/completions";
     public static final int PROXY_PORT = 7890;
     public static final String PROXY_HOSTNAME = "localhost";

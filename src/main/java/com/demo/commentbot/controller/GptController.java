@@ -1,10 +1,11 @@
 package com.demo.commentbot.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.demo.commentbot.pojo.*;
 import com.demo.commentbot.pojo.dto.Chat;
 import com.demo.commentbot.pojo.dto.LabelInfoDto;
+import com.demo.commentbot.pojo.dto.SendRes;
+import com.demo.commentbot.pojo.gpt.FrontReq;
 import com.demo.commentbot.service.LabelService;
 import com.demo.constant.RedisConstants;
 import com.demo.constant.ResultCode;
@@ -16,9 +17,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @Slf4j
@@ -33,10 +32,10 @@ public class GptController {
 
     @PostMapping("/send")
     public R<Object> sendMessage(@RequestHeader String token,
-                                    @RequestBody ArrayList<Integer> ids){
+                                 @RequestBody FrontReq frontReq){
         // 发送请求并获取响应
-        Chat resDto = gptService.sendMessage(token,ids);
-
+        SendRes resDto = gptService.sendMessage(token,frontReq);
+        System.out.println(frontReq);
         // 处理响应...
         if(resDto == null) return R.error(ResultCode.FAILED,"出现错误响应");
         if(resDto.getId() == null) return R.failed(ResultCode.UNAUTHORIZED,"无效token",token);

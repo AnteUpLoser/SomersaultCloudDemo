@@ -2,10 +2,13 @@ package com.demo.commentbot.service.impl;
 
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.demo.commentbot.dao.LabelInfoDao;
 import com.demo.commentbot.pojo.dto.Chat;
+import com.demo.commentbot.pojo.dto.SendRes;
 import com.demo.commentbot.pojo.gpt.GptReq;
 import com.demo.commentbot.pojo.gpt.GptRes;
+import com.demo.commentbot.pojo.gpt.FrontReq;
 import com.demo.commentbot.service.GptService;
 import com.demo.constant.Bot;
 import com.demo.constant.RedisConstants;
@@ -20,7 +23,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -32,8 +34,8 @@ public class GptServiceImpl implements GptService {
     @Resource
     private RedisService redisService;
 
-    public Chat sendMessage(String token, ArrayList<Integer> ids) {
-        Chat res = new Chat();
+    public SendRes sendMessage(String token, FrontReq frontReq) {
+        SendRes res = new SendRes();
         //TODO 对用户进行token统计
         //检验token
         Integer uid = JwtUtil.getUidByJwt(token);
@@ -50,8 +52,11 @@ public class GptServiceImpl implements GptService {
         //创建请求体
         MediaType mediaType = MediaType.parse("application/json");
         //得到所有标签拼成的评价语
-        String labels = String.valueOf(labelInfoDao.getLabelInfoList(ids));
-        GptReq gptReq = new GptReq(labels);
+        String labels = String.valueOf(labelInfoDao.getLabelInfoList(frontReq.getLabelIds()));
+        System.out.println(labels);
+
+        //拼好请求的文本
+        GptReq gptReq = new GptReq("小朋友的名字是："+ frontReq.getStuName()+"," + "参考评语风格："+ frontReq.getHistoryComment()+","+"评价词汇"+ labels);
         String req = JSON.toJSONString(gptReq);
         RequestBody requestBody = RequestBody.create(req,mediaType);
         // 创建 POST 请求
@@ -75,10 +80,10 @@ public class GptServiceImpl implements GptService {
             GptRes gptRes = JSON.parseObject(responseBody,GptRes.class);
 
             //请求chat
-            Chat chatReq = new Chat();
-            chatReq.setId(String.valueOf(UUID.randomUUID()));
-            chatReq.setRole("user");
-            chatReq.setMessage(labels);
+            Chat userMsg = new Chat();
+            userMsg.setId(String.valueOf(UUID.randomUUID()));
+            userMsg.setRole("user");
+            userMsg.setLabelIDs(frontReq.getLabelIds());
 
 
             //响应chat
@@ -87,8 +92,10 @@ public class GptServiceImpl implements GptService {
             res.setId(gptRes.getId());
 
             //存入redis聊天记录
-            String reqRedisValue = JSON.toJSONString(chatReq);
+            //不序列化为空的属性
+            String reqRedisValue = JSON.toJSONString(userMsg);
             String resRedisValue = JSON.toJSONString(res);
+
             redisService.storeChatMessage(RedisConstants.COMMENTBOT_CONVERSATION_HISTORY_USER+uid,reqRedisValue,System.currentTimeMillis());
             redisService.storeChatMessage(RedisConstants.COMMENTBOT_CONVERSATION_HISTORY_USER+uid,resRedisValue,System.currentTimeMillis());
             return res;

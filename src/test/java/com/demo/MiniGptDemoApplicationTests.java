@@ -35,8 +35,6 @@ class MiniGptDemoApplicationTests {
         String token = JwtUtil.createJwt(claims);
         System.out.println(token);
 
-        int uid = JwtUtil.getUidByJwt(token);
-
 
     }
 
