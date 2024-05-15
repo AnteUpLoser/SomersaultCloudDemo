@@ -3,7 +3,6 @@ package com.demo.commentbot.pojo.gpt;
 
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.demo.constant.BotSysPrompt;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

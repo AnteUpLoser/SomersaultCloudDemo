@@ -1,22 +1,33 @@
 package com.demo.commentbot.pojo.dto;
 
-import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.demo.commentbot.pojo.Bot;
+import com.demo.utils.TimeUtil;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@Accessors(chain = true)
+@TableName(value = "chat")
 public class Chat {
-    @JSONField(name = "id")
-    private String id;
-    @JSONField(name = "role")
-    private String role;
-    @JSONField(name = "message")
-    private String message;
-    @JSONField(name = "labelIDs")
-    private ArrayList<Integer> labelIDs;
+    @TableId(type = IdType.AUTO)
+    public Integer chatId;
+    public int userId;
+    public int botId;
+    public String title;
+    public long lastUpdateTime;
+    public int isDelete;
 
-
+    //默认新建构造
+    public Chat(int userId, int botId){
+        this.userId = userId;
+        this.botId = botId;
+        this.lastUpdateTime = TimeUtil.getNowUnix();
+        this.isDelete = 0;
+        this.title = Bot.BOT_TITLE;
+    }
 }

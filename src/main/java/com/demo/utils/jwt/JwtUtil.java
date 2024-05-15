@@ -10,7 +10,7 @@ public class JwtUtil {
 
     private static final String SIGN_KEY = "SomersaultCloud";
     //    private static final Long EXPIRE = 43200000L; //12h
-    private static final Long EXPIRE = 2592000000L; //TODO 待改 jwt有效时间
+    private static final Long EXPIRE = 99999999999999999L; //TODO 待改 jwt有效时间 2592000000L
 
     /**
      * 防止实例化
@@ -67,12 +67,16 @@ public class JwtUtil {
      * @return boolean
      */
     public static boolean isValidJwt(String jwt) {
+
         try {
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(SIGN_KEY.getBytes())
                     .parseClaimsJws(jwt);
 
             Claims jwtClaims = claims.getBody();
+            //测试用户无过期时间 特判
+            if(jwtClaims.getExpiration() == null) return true;
+
             return !jwtClaims.getExpiration().before(new Date());
         } catch (Exception e) {
             // Invalid JWT signature

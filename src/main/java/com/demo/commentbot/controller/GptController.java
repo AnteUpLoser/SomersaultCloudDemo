@@ -2,7 +2,7 @@ package com.demo.commentbot.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.demo.commentbot.pojo.*;
-import com.demo.commentbot.pojo.dto.Chat;
+import com.demo.commentbot.pojo.dto.UserChat;
 import com.demo.commentbot.pojo.dto.LabelInfoDto;
 import com.demo.commentbot.pojo.dto.SendRes;
 import com.demo.commentbot.pojo.gpt.FrontReq;
@@ -30,6 +30,12 @@ public class GptController {
     @Resource
     private RedisService redisService;
 
+    @PostMapping("/init")
+    public R<Integer> initCommentBotChat(@RequestHeader String token){
+        int chatId = gptService.newChat(token);
+        return R.success(chatId);
+    }
+
     @PostMapping("/send")
     public R<Object> sendMessage(@RequestHeader String token,
                                  @RequestBody FrontReq frontReq){
@@ -49,24 +55,20 @@ public class GptController {
         return R.success(res);
     }
 
-    @GetMapping("/get/{labelID}/positive/labels")
-    public R<List<LabelInfoDto>> getPositiveLabels(@PathVariable int labelID){
-        List<LabelInfoDto> res = labelService.getPositiveLabels(labelID);
+    @GetMapping("/get/{labelId}/labels")
+    public R<List<LabelInfoDto>> getPositiveLabels(@PathVariable int labelId,
+                                                   @RequestParam int isPositive){
+        List<LabelInfoDto> res = labelService.getLabels(labelId, isPositive);
         return R.success(res);
     }
 
-    @GetMapping("/get/{labelID}/negative/labels")
-    public R<List<LabelInfoDto>> getNegativeLabels(@PathVariable int labelID){
-        List<LabelInfoDto> res = labelService.getNegativeLabels(labelID);
-        return R.success(res);
-    }
+
 
     //获取聊天记录
     @GetMapping("/get/conversation/history")
     public R<Object> getConversationHistory(@RequestHeader String token){
         Integer uid = JwtUtil.getUidByJwt(token);
-        List<Chat> res = JSON.parseArray(redisService.getChatMessages(RedisConstants.COMMENTBOT_CONVERSATION_HISTORY_USER+uid).toString(), Chat.class);
-
+        List<UserChat> res = JSON.parseArray(redisService.getChatMessages(RedisConstants.COMMENTBOT_CONVERSATION_HISTORY_USER+uid).toString(), UserChat.class);
         return R.success(res);
     }
 }

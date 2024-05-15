@@ -13,4 +13,18 @@
             #{id}
         </foreach>
     </select>
+
+    <!--  动态查询标签 -->
+    <select id="getLabels" parameterType="java.util.List" resultType="com.demo.commentbot.pojo.dto.LabelInfoDto">
+        SELECT id,label_text FROM label_info
+        <where>
+            <if test="labelId != null">
+                AND label_id = #{labelId}
+            </if>
+            <if test="isPositive != null">
+                AND is_positive = #{isPositive}
+            </if>
+        </where>
+    </select>
+
 </mapper>

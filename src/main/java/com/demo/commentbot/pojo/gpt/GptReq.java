@@ -1,8 +1,8 @@
 package com.demo.commentbot.pojo.gpt;
 
 
-import com.demo.constant.Bot;
-import com.demo.constant.BotSysPrompt;
+import com.demo.commentbot.pojo.Bot;
+import com.demo.commentbot.pojo.BotSysPrompt;
 import lombok.Data;
 
 import java.util.ArrayList;

@@ -2,16 +2,14 @@ package com.demo.commentbot.service.impl;
 
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.demo.commentbot.dao.ChatDao;
 import com.demo.commentbot.dao.LabelInfoDao;
 import com.demo.commentbot.pojo.dto.Chat;
 import com.demo.commentbot.pojo.dto.SendRes;
 import com.demo.commentbot.pojo.gpt.GptReq;
-import com.demo.commentbot.pojo.gpt.GptRes;
 import com.demo.commentbot.pojo.gpt.FrontReq;
 import com.demo.commentbot.service.GptService;
-import com.demo.constant.Bot;
-import com.demo.constant.RedisConstants;
+import com.demo.commentbot.pojo.Bot;
 import com.demo.service.redis.RedisService;
 import com.demo.utils.jwt.JwtUtil;
 import jakarta.annotation.Resource;
@@ -20,15 +18,14 @@ import okhttp3.*;
 
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.util.Objects;
-import java.util.UUID;
 
 @Slf4j
 @Service
 public class GptServiceImpl implements GptService {
+    @Resource
+    private ChatDao chatDao;
     @Resource
     private LabelInfoDao labelInfoDao;
     @Resource
@@ -42,31 +39,16 @@ public class GptServiceImpl implements GptService {
         System.out.println(uid);
         if(uid == null) return res;
 
-        // 创建代理服务器的主机和端口
-        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(Bot.PROXY_HOSTNAME, Bot.PROXY_PORT));
-        // 创建 OkHttpClient.Builder 实例，并配置代理
-        OkHttpClient.Builder builder = new OkHttpClient.Builder().proxy(proxy);
-        // 创建 OkHttpClient 实例
-        OkHttpClient client = builder.build();
 
-        //创建请求体
-        MediaType mediaType = MediaType.parse("application/json");
         //得到所有标签拼成的评价语
         String labels = String.valueOf(labelInfoDao.getLabelInfoList(frontReq.getLabelIds()));
-        System.out.println(labels);
 
         //拼好请求的文本
         GptReq gptReq = new GptReq("小朋友的名字是："+ frontReq.getStuName()+"," + "参考评语风格："+ frontReq.getHistoryComment()+","+"评价词汇"+ labels);
         String req = JSON.toJSONString(gptReq);
-        RequestBody requestBody = RequestBody.create(req,mediaType);
-        // 创建 POST 请求
-        Request request = new Request.Builder()
-                .url(Bot.API_URL)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization", "Bearer " + Bot.SK)
-                .post(requestBody)
-                .build();
 
+
+/*
         // 发送请求并获取响应
         try {
             Response response = client.newCall(request).execute();
@@ -102,8 +84,42 @@ public class GptServiceImpl implements GptService {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
-        }
+        }*/
+return null;
 
+    }
+
+    //用户新建Chat
+    public Integer newChat(String token) {
+        Integer uid = JwtUtil.getUidByJwt(token);
+        if (uid == null) {
+            throw new IllegalArgumentException("Invalid JWT token");
+        }
+        Chat newChat = new Chat(uid, Bot.BOT_ID);
+        chatDao.insert(newChat);
+        return newChat.getChatId();
+    }
+
+    //请求官方api的函数
+    public String sendMsg(String reqString){
+        // 创建代理服务器的主机和端口
+        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(Bot.PROXY_HOSTNAME, Bot.PROXY_PORT));
+        // 创建 OkHttpClient.Builder 实例，并配置代理
+        OkHttpClient.Builder builder = new OkHttpClient.Builder().proxy(proxy);
+        // 创建 OkHttpClient 实例
+        OkHttpClient client = builder.build();
+
+        //创建请求体
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody requestBody = RequestBody.create(reqString,mediaType);
+        // 创建 POST 请求
+        Request request = new Request.Builder()
+                .url(Bot.API_URL)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Authorization", "Bearer " + Bot.SK)
+                .post(requestBody)
+                .build();
+        return null;
 
     }
 

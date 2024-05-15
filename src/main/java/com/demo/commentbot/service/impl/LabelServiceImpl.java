@@ -30,9 +30,9 @@ public class LabelServiceImpl implements LabelService {
     public List<Label> getAllLabel() {
         String redisKey = RedisConstants.COMMENT_BOT_LABEL_KINDS;
         List<Label> res;
+        TypeReference<List<Label>> typeReference = new TypeReference<>() {};
         //先查询redis缓存 再查询数据库
         if(redisService.isContainsKey(redisKey)){
-            TypeReference<List<Label>> typeReference = new TypeReference<>() {};
             res = JSON.parseObject(redisService.getValue(redisKey),typeReference);
             return res;
         }else{
@@ -45,15 +45,20 @@ public class LabelServiceImpl implements LabelService {
     }
 
 
-    public List<LabelInfoDto> getPositiveLabels(int labelID) {
-        String redisKey = RedisConstants.COMMENT_BOT_LABEL_POSITIVE+labelID;
+    public List<LabelInfoDto> getLabels(int labelId, int isPositive) {
+        String redisKey;
+        if(isPositive == 1)
+            redisKey = RedisConstants.COMMENT_BOT_LABEL_POSITIVE+labelId;
+        else
+            redisKey = RedisConstants.COMMENT_BOT_LABEL_NEGATIVE+labelId;
+
         List<LabelInfoDto> res;
+        TypeReference<List<LabelInfoDto>> typeReference = new TypeReference<>() {};
         //先查询redis缓存 再查询数据库
         if(redisService.isContainsKey(redisKey)){
-            TypeReference<List<LabelInfoDto>> typeReference = new TypeReference<>() {};
             res = JSON.parseObject(redisService.getValue(redisKey),typeReference);
         }else {
-            res = labelInfoDao.getPositiveLabels(labelID);
+            res = labelInfoDao.getLabels(labelId,isPositive);
             String redisValue = JSON.toJSONString(res);
             redisService.setHalfHourValue(redisKey,redisValue);
         }
@@ -62,21 +67,6 @@ public class LabelServiceImpl implements LabelService {
     }
 
 
-    public List<LabelInfoDto> getNegativeLabels(int labelID) {
-        String redisKey = RedisConstants.COMMENT_BOT_LABEL_NEGATIVE+labelID;
-        List<LabelInfoDto> res;
-        //先查询redis缓存 再查询数据库
-        if(redisService.isContainsKey(redisKey)){
-            TypeReference<List<LabelInfoDto>> typeReference = new TypeReference<>() {};
-            res = JSON.parseObject(redisService.getValue(redisKey),typeReference);
-        }else {
-            res = labelInfoDao.getNegativeLabels(labelID);
-            String redisValue = JSON.toJSONString(res);
-            redisService.setHalfHourValue(redisKey,redisValue);
-        }
-
-        return res;
-    }
 
 
 }

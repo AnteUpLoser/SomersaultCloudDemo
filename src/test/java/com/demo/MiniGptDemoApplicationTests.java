@@ -2,27 +2,33 @@ package com.demo;
 
 import com.alibaba.fastjson.JSON;
 import com.demo.commentbot.dao.LabelInfoDao;
-import com.demo.commentbot.pojo.dto.Chat;
+import com.demo.commentbot.pojo.dto.UserChat;
+import com.demo.commentbot.pojo.gpt.GptReq;
 import com.demo.commentbot.pojo.gpt.Message;
-import com.demo.dao.RegisterDao;
+import com.demo.commentbot.pojo.Bot;
 import com.demo.pojo.dto.RegisterDto;
 import com.demo.service.redis.RedisService;
 import com.demo.utils.encryption.EncryptUtil;
 import com.demo.utils.jwt.JwtUtil;
+import jakarta.annotation.Resource;
+import okhttp3.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 
-@SpringBootTest
+
+@SpringBootApplication
 class MiniGptDemoApplicationTests {
-    @Autowired
-    private RegisterDao registerDao;
-    @Autowired
+    @Resource
     private LabelInfoDao labelInfoDao;
     @Autowired
     private RedisService redisService;
@@ -76,7 +82,7 @@ class MiniGptDemoApplicationTests {
     //聊天记录测试
     @Test
     public void storeTest(){
-        Chat chat = new Chat();
+        UserChat chat = new UserChat();
         chat.setId("3");
         chat.setMessage("hello");
         String jsonChat = JSON.toJSONString(chat);
@@ -85,5 +91,49 @@ class MiniGptDemoApplicationTests {
         System.out.println(redisService.getChatMessages("chat"));
     }
 
+    @Test
+    public void sendTest(){
+        String req = "年后";
+        System.out.println(sendMsg(req));
+    }
 
+    //请求官方api的函数
+    public String sendMsg(String reqString) {
+        // 创建代理服务器的主机和端口
+        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(Bot.PROXY_HOSTNAME, Bot.PROXY_PORT));
+        // 创建 OkHttpClient.Builder 实例，并配置代理
+        OkHttpClient.Builder builder = new OkHttpClient.Builder().proxy(proxy);
+        // 创建 OkHttpClient 实例
+        OkHttpClient client = builder.build();
+
+        //创建请求体
+        MediaType mediaType = MediaType.parse("application/json");
+        //拼好请求的文本
+        GptReq gptReq = new GptReq(reqString);
+        String req = JSON.toJSONString(gptReq);
+        RequestBody requestBody = RequestBody.create(req, mediaType);
+        // 创建 POST 请求
+        Request request = new Request.Builder()
+                .url(Bot.API_URL)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Authorization", "Bearer " + Bot.SK)
+                .post(requestBody)
+                .build();
+        // 发送请求并获取响应
+        try {
+            Response response = client.newCall(request).execute();
+            //解决不可能的空指针
+            String responseBody = Objects.requireNonNull(response.body()).string();
+
+            return responseBody;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Test
+    public void jwtTest(){
+        System.out.println(JwtUtil.getUidByJwt("eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOi0xfQ.LlHkLQ_aO5TYvJT9PXegUmPnOaJDLsDU2kshO3cSxq0"));
+    }
 }
