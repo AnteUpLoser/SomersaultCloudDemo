@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://47.120.79.128/gpt?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+    url: jdbc:mysql://127.0.0.1/gpt?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
     username: root
-    password: Aa13000
+    password: 
 
 
 
@@ -16,11 +16,11 @@ spring:
   data:
     redis:
       # 服务器地址ip
-      host: 47.120.79.128
+      host: 127.0.0.1
       # Redis端口
       port: 6379
       # Redis密码（默认为空）
-      password: 13000
+      password: 
 
 #      lettuce:
 #        pool:
@@ -33,8 +33,8 @@ spring:
   #邮箱验证
   mail:
     host: smtp.qq.com
-    username: 1750859115@qq.com
-    password: rdrrkprirrxmfafg
+    username: 
+    password: 
     default-encoding: UTF-8
     port: 465
     properties:
